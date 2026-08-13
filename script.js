@@ -659,29 +659,31 @@ async function pageWatch(type, id){
     // Videasy's own nested-iframe permissions-policy issue entirely.
     function goFS(){
       const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
-      if(fsEl) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
-      else (player.requestFullscreen || player.webkitRequestFullscreen).call(player);
+      if(fsEl){
+        (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      } else {
+        const req = (player.requestFullscreen || player.webkitRequestFullscreen).call(player);
+        // Lock right after requestFullscreen resolves, still inside this
+        // click's "user gesture" window — locking later (e.g. from a
+        // fullscreenchange listener with any delay) loses that permission
+        // on Android and gets silently rejected, which is why it was
+        // falling back to portrait and refusing to relock.
+        if(req && req.then){
+          req.then(() => {
+            if(screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{});
+          }).catch(()=>{});
+        } else if(screen.orientation && screen.orientation.lock){
+          screen.orientation.lock('landscape').catch(()=>{});
+        }
+      }
     }
     document.getElementById('cFull').addEventListener('click', goFS);
 
-    // Lock to landscape on Android when entering fullscreen, unlock on exit.
-    // screen.orientation.lock() only works while an element is fullscreen,
-    // and is not supported on iOS Safari — it will silently no-op there.
-    // Debounced because Android Chrome sometimes fires fullscreenchange
-    // as a false-alarm blip (system UI flicker on tap) without actually
-    // exiting — reacting instantly to that caused the lock/unlock to race
-    // and get stuck in portrait.
-    let fsOrientTimer;
+    // Unlock on exit — this direction doesn't need user-gesture timing,
+    // so a plain listener is fine (also covers Android's back-gesture exit).
     document.addEventListener('fullscreenchange', () => {
-      clearTimeout(fsOrientTimer);
-      fsOrientTimer = setTimeout(() => {
-        const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
-        if(fsEl && screen.orientation && screen.orientation.lock){
-          screen.orientation.lock('landscape').catch(()=>{});
-        } else if(!fsEl && screen.orientation && screen.orientation.unlock){
-          screen.orientation.unlock();
-        }
-      }, 250);
+      const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+      if(!fsEl && screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
     });
 
     function loadEmbed(){
