@@ -1,6 +1,7 @@
 /* =====================================================================
    REELHOUSE — TMDB + VIDEASY (final integrated build)
    Core streaming/TMDB/progress logic preserved. Full English UI.
+   https://www.npoint.io/docs/a44797390ee794ce0c4c
 ===================================================================== */
 
 /* ===== CONFIG ===== */
