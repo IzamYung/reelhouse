@@ -129,10 +129,15 @@ function initEdgeFade(scrollEl){
   const r = document.createElement('div'); r.className = 'edge-fade edge-fade-r';
   parent.appendChild(l); parent.appendChild(r);
   const position = () => {
-    // Scope the fade strictly to the row's own height, so it never washes over
-    // section titles or the ← → nav buttons that sit above the row.
+    // Scope the fade strictly to the row's own box (top/height AND left/right),
+    // so it always hugs the row's real edges instead of the parent's edges.
+    // Sections like .block carry their own 44px side padding, so a static
+    // left:0/right:0 landed at the section wall instead of where the row
+    // actually starts — that's what threw the fade off on the homepage rows.
     l.style.top = r.style.top = scrollEl.offsetTop + 'px';
     l.style.height = r.style.height = scrollEl.offsetHeight + 'px';
+    l.style.left = scrollEl.offsetLeft + 'px';
+    r.style.right = (parent.clientWidth - scrollEl.offsetLeft - scrollEl.offsetWidth) + 'px';
   };
   const update = () => {
     position();
