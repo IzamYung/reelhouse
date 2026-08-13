@@ -667,13 +667,21 @@ async function pageWatch(type, id){
     // Lock to landscape on Android when entering fullscreen, unlock on exit.
     // screen.orientation.lock() only works while an element is fullscreen,
     // and is not supported on iOS Safari — it will silently no-op there.
+    // Debounced because Android Chrome sometimes fires fullscreenchange
+    // as a false-alarm blip (system UI flicker on tap) without actually
+    // exiting — reacting instantly to that caused the lock/unlock to race
+    // and get stuck in portrait.
+    let fsOrientTimer;
     document.addEventListener('fullscreenchange', () => {
-      const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
-      if(fsEl && screen.orientation && screen.orientation.lock){
-        screen.orientation.lock('landscape').catch(()=>{});
-      } else if(!fsEl && screen.orientation && screen.orientation.unlock){
-        screen.orientation.unlock();
-      }
+      clearTimeout(fsOrientTimer);
+      fsOrientTimer = setTimeout(() => {
+        const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+        if(fsEl && screen.orientation && screen.orientation.lock){
+          screen.orientation.lock('landscape').catch(()=>{});
+        } else if(!fsEl && screen.orientation && screen.orientation.unlock){
+          screen.orientation.unlock();
+        }
+      }, 250);
     });
 
     function loadEmbed(){
