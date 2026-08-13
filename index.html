@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REELHOUSE — Stream Movies & Series</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'><circle cx='12' cy='12' r='10' stroke='%23fff' stroke-width='1.4'/><circle cx='12' cy='12' r='2.4' fill='%23e8b34e'/><circle cx='12' cy='5.6' r='1.5' fill='%23fff'/><circle cx='12' cy='18.4' r='1.5' fill='%23fff'/><circle cx='5.6' cy='12' r='1.5' fill='%23fff'/><circle cx='18.4' cy='12' r='1.5' fill='%23fff'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="grain"></div>
+
+<header id="hdr">
+  <a class="logo" href="#/" aria-label="REELHOUSE home">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.4"/>
+      <circle cx="12" cy="12" r="2.4" fill="#e8b34e"/>
+      <circle cx="12" cy="5.6" r="1.5" fill="currentColor"/>
+      <circle cx="12" cy="18.4" r="1.5" fill="currentColor"/>
+      <circle cx="5.6" cy="12" r="1.5" fill="currentColor"/>
+      <circle cx="18.4" cy="12" r="1.5" fill="currentColor"/>
+    </svg>
+    REEL<b>HOUSE</b>
+  </a>
+  <nav id="siteNav">
+    <a href="#/" data-r="home">HOME</a>
+    <a href="#/filem" data-r="filem">MOVIES</a>
+    <a href="#/siri" data-r="siri">TV SERIES</a>
+    <a href="#/mylist" data-r="mylist">MY LIST <span class="list-badge" id="listCount">0</span></a>
+  </nav>
+  <div class="hdr-right">
+    <button class="icon-btn" id="searchBtn" title="Search (/)">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    </button>
+    <button class="icon-btn menu-btn" id="menuBtn" title="Menu" aria-label="Open menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+  </div>
+</header>
+<div class="nav-backdrop" id="navBackdrop"></div>
+
+<div id="heroShell"></div>
+<main id="app"></main>
+
+<footer>
+  <div class="film-edge"></div>
+  <div class="f-grid">
+    <div>
+      <div class="logo" style="font-size:24px">REEL<b>HOUSE</b></div>
+      <p>Streaming is provided by Videasy (third-party). Some titles may be unavailable depending on their sources. Watch progress is saved automatically in your browser — pick up right where you left off.</p>
+    </div>
+    <div>
+      <h5>NAVIGATION</h5>
+      <ul>
+        <li><a href="#/">Home</a></li>
+        <li><a href="#/filem">Movies</a></li>
+        <li><a href="#/siri">TV Series</a></li>
+        <li><a href="#/mylist">My List</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>POWERED BY</h5>
+      <ul>
+        <li><a href="https://www.themoviedb.org/" target="_blank" rel="noopener">Data: TMDB ✓</a></li>
+        <li><a href="#/filem">Player: Videasy ✓</a></li>
+        <li><a href="#/">Auto-resume: On ✓</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>LEGAL</h5>
+      <p>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+    </div>
+  </div>
+  <div class="f-bottom">
+    <span>© 2025 REELHOUSE</span>
+    <span>SHOT ON 35MM ✦ KUALA LUMPUR, MY</span>
+  </div>
+</footer>
+
+<div class="search-layer" id="searchLayer">
+  <button class="search-close" id="searchClose">ESC ✕ CLOSE</button>
+  <input type="text" id="searchInput" placeholder="Search movies, series..." autocomplete="off">
+  <div id="searchResults"></div>
+</div>
+
+<div class="modal-root" id="modalRoot"></div>
+<div id="toast"></div>
+<div id="keyBanner"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
