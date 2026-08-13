@@ -229,6 +229,10 @@ section.block:hover .row-nav{opacity:1;transform:none}
 .fs-out:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 20px -8px var(--gold-glow)}
 .player{position:relative;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;border:1px solid var(--line);box-shadow:0 40px 90px -40px rgba(0,0,0,.9)}
 .player:fullscreen{border-radius:0;border:none}
+/* Visually forces landscape on a portrait phone screen while fullscreen —
+   pure CSS, doesn't depend on the flaky Screen Orientation Lock API and
+   can't get "stuck", since it's just recalculated from viewport size. */
+.player.force-landscape{position:fixed !important;top:0;left:0;width:100vh !important;height:100vw !important;transform:rotate(90deg) translateY(-100%);transform-origin:top left;z-index:9999;border-radius:0;border:none}
 .player iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000;z-index:4}
 .player .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
 .src-badge{position:absolute;top:14px;left:14px;z-index:6;font-family:var(--mono);font-size:9.5px;letter-spacing:2px;background:rgba(10,10,13,.8);border:1px solid var(--line);padding:6px 11px;border-radius:5px;color:var(--ink-dim)}

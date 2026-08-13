@@ -662,29 +662,25 @@ async function pageWatch(type, id){
       if(fsEl){
         (document.exitFullscreen || document.webkitExitFullscreen).call(document);
       } else {
-        const req = (player.requestFullscreen || player.webkitRequestFullscreen).call(player);
-        // Lock right after requestFullscreen resolves, still inside this
-        // click's "user gesture" window — locking later (e.g. from a
-        // fullscreenchange listener with any delay) loses that permission
-        // on Android and gets silently rejected, which is why it was
-        // falling back to portrait and refusing to relock.
-        if(req && req.then){
-          req.then(() => {
-            if(screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{});
-          }).catch(()=>{});
-        } else if(screen.orientation && screen.orientation.lock){
-          screen.orientation.lock('landscape').catch(()=>{});
-        }
+        (player.requestFullscreen || player.webkitRequestFullscreen).call(player);
       }
     }
     document.getElementById('cFull').addEventListener('click', goFS);
 
-    // Unlock on exit — this direction doesn't need user-gesture timing,
-    // so a plain listener is fine (also covers Android's back-gesture exit).
-    document.addEventListener('fullscreenchange', () => {
+    // Force landscape on phones via CSS rotation instead of the Screen
+    // Orientation Lock API — that API is unreliable (not supported on iOS,
+    // flaky on Android especially with a cross-origin iframe inside), and
+    // it's easy for it to end up "stuck". This just checks the actual
+    // viewport dimensions every time fullscreen state or size changes, so
+    // it always self-corrects instead of getting stuck one way.
+    function syncForcedLandscape(){
       const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
-      if(!fsEl && screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
-    });
+      const isPortrait = window.innerWidth < window.innerHeight;
+      player.classList.toggle('force-landscape', !!fsEl && isPortrait);
+    }
+    document.addEventListener('fullscreenchange', syncForcedLandscape);
+    document.addEventListener('webkitfullscreenchange', syncForcedLandscape);
+    window.addEventListener('resize', syncForcedLandscape);
 
     function loadEmbed(){
       if(type === 'movie'){
